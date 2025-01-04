@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Question Game</title>
+    <style>
+        /* Basic styling */
+        #game-area { width: 80%; margin: 20px auto; border: 1px solid #ccc; padding: 20px; }
+        #question-area { font-size: 18px; margin-bottom: 20px; }
+        #options-area button { margin-right: 10px; }
+        #players-area { margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 10px;}
+        .player { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div id="game-area">
+        <div id="chat-area">
+            <ul id="messagesList"></ul>
+        </div>
+        <div id="name-area">
+            <input type="text" id="nameInput" placeholder="Enter your name" />
+            <button id="registerButton">Register</button>
+        </div>
+        <div id="timer-area"></div>
+        <div id="question-area"></div>
+        <div id="options-area"></div>
+        <div id="players-area"></div>
+    </div>
+
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script>
+        let downloadTimer; // Global timer reference
+        let timeleft; // Keep track of remaining time
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/quizhub") // Matches your SignalR hub endpoint
+            .build();
+
+        connection.on("ReceiveMessage", (user, message) => {
+            const li = document.createElement("li");
+            li.textContent = `${user}: ${message}`;
+            document.getElementById("messagesList").appendChild(li);
+        });
+
+        connection.on("ReceiveQuestion", (question) => {
+            displayQuestion(question);
+        });
+
+        connection.on("UpdatePlayers", (players) => {
+            displayPlayers(players);
+        });
+
+        connection.on("PlayerAnswered", (player, isCorrect, players) => {
+            displayPlayers(players);
+           const li = document.createElement("li");
+           li.textContent = `${player.name} has answered and got it ${isCorrect ? 'right' : 'wrong'}!`;
+           document.getElementById("messagesList").appendChild(li);
+        });
+
+        connection.on("GameOver", (players) => {
+            gameOver(players);
+        });
+
+        document.getElementById("registerButton").addEventListener("click", () => {
+            const playerName = document.getElementById("nameInput").value;
+            connection.invoke("RegisterPlayer", playerName);
+        });
+
+        function displayPlayers(players) {
+            const playersArea = document.getElementById("players-area");
+            playersArea.innerHTML = ''; // Clear existing players
+            players.forEach(player => {
+               const playerDiv = document.createElement("div");
+               playerDiv.classList.add("player");
+                playerDiv.textContent = `${player.name}: ${player.score}`;
+                playersArea.appendChild(playerDiv);
+            });
+        }
+
+        function initializeProgressBar() {
+            const timerArea = document.getElementById("timer-area");
+            timerArea.innerHTML = ''; // Clear any existing content
+            const progressBar = document.createElement("progress");
+            progressBar.id = "progressBar";
+            progressBar.value = 0;
+            progressBar.max = 10;
+            timerArea.appendChild(progressBar);
+        }
+
+        function startTimer(onTimeUp) {
+            clearInterval(downloadTimer); // Clear any existing timer
+            timeleft = 10;
+            const progressBar = document.getElementById("progressBar");
+
+            downloadTimer = setInterval(() => {
+                if (timeleft <= 0) {
+                    clearInterval(downloadTimer);
+                    onTimeUp(); // Callback when time runs out
+                } else {
+                    progressBar.value = 10 - timeleft;
+                    timeleft -= 1;
+                }
+            }, 1000);
+        }
+
+        function displayQuestion(question) {
+            const questionArea = document.getElementById("question-area");
+            const optionsArea = document.getElementById("options-area");
+           
+            questionArea.textContent = question.text;
+            optionsArea.innerHTML = ''; // Clear old options
+            initializeProgressBar();
+
+            question.options.forEach(option => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.addEventListener("click", () => handleAnswer(option));
+                optionsArea.appendChild(button);
+            });
+
+            startTimer(() => connection.invoke("NextQuestion")); // Restart timer with next question logic
+        }
+
+        function handleAnswer(answer) {
+            connection.invoke("AnswerQuestion", answer, timeleft);
+        }
+
+        function gameOver(players) {
+            clearInterval(downloadTimer);
+            const li = document.createElement("li");
+            var winner = players.reduce((prev, current) => (prev.score > current.score) ? prev : current)
+            li.textContent = pickWinner(players);
+            document.getElementById("messagesList").appendChild(li);
+            document.getElementById("timer-area").innerHTML = '';
+            document.getElementById("question-area").innerHTML = '';
+            document.getElementById("options-area").innerHTML = '';
+        }
+
+        function pickWinner(players) {
+            // Find the highest score first
+            const highestScore = Math.max(...players.map(player => player.score));
+
+            // Collect all players with the highest score
+            const winners = players.filter(player => player.score === highestScore);
+
+            // Determine the result
+            if (winners.length > 1) {
+                return `It's a draw! Winners are: ${winners.map(w => w.name)}`;
+            } else {
+                return `Game is over! Winner is ${winners[0].name} with ${winners[0].score}`;
+            }
+        }
+
+        connection.start().then(() => {
+          console.log("SignalR connection established.");
+            }).catch(err => console.error(err));
+    </script>
+</body>
+</html>
