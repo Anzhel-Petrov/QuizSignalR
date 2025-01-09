@@ -18,5 +18,5 @@ public class QuizDbContext : DbContext
 
     //public DbSet<Player> Players { get; set; }
     //public DbSet<GameState> GameStates { get; set; }
-    public Question Questions { get; set; }
+    public DbSet<Question> Questions { get; set; } = null!;
 }

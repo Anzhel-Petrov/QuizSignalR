@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using QuizSignalR.Hubs;
+using QuizSignalR.Infrastructure;
 
 namespace QuizSignalR
 {
@@ -6,7 +8,13 @@ namespace QuizSignalR
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+            string connectionString =
+                builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+            builder.Services.AddDbContext<QuizDbContext>(options =>
+                options.UseSqlServer(connectionString));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
