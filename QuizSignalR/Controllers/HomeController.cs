@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using QuizSignalR.Models;
 using System.Diagnostics;
+using QuizSignalR.Core.Models;
 
 namespace QuizSignalR.Controllers
 {

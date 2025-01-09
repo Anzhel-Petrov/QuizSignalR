@@ -1,4 +1,4 @@
-namespace QuizSignalR.Models
+namespace QuizSignalR.Core.Models
 {
     public class ErrorViewModel
     {

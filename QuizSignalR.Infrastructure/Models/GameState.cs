@@ -1,4 +1,4 @@
-﻿namespace QuizSignalR.Models;
+﻿namespace QuizSignalR.Infrastructure.Models;
 
 public class GameState
 {
