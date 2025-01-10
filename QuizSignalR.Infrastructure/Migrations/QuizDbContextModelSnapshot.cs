@@ -43,7 +43,7 @@ namespace QuizSignalR.Infrastructure.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answer");
+                    b.ToTable("Answer", (string)null);
                 });
 
             modelBuilder.Entity("QuizSignalR.Infrastructure.Models.Question", b =>
@@ -59,7 +59,7 @@ namespace QuizSignalR.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("QuizSignalR.Infrastructure.Models.Answer", b =>
