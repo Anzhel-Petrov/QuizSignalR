@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\" />
+    <ProjectReference Include="..\QuizSignalR.Infrastructure\QuizSignalR.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

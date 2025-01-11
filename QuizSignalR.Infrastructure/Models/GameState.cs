@@ -2,9 +2,14 @@
 
 public class GameState
 {
-    public List<Question> Questions { get; set; } = new List<Question>();
+    public GameState()
+    {
+        this.Questions = new HashSet<Question>();
+        this.Players = new Dictionary<string, Player>();
+    }
+    public ICollection<Question> Questions { get; set; }
     public int CurrentQuestionIndex { get; set; }
-    public Dictionary<string, Player> Players { get; set; } = new Dictionary<string, Player>();
-    public Question CurrentQuestion => CurrentQuestionIndex < Questions.Count ? Questions[CurrentQuestionIndex] : null;
+    public Dictionary<string, Player> Players { get; set; }
+    public Question CurrentQuestion { get; set; }
     public bool GameEnded { get; set; }
 }

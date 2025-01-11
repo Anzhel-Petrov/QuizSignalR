@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using QuizSignalR.Core.Contracts;
+using QuizSignalR.Core.Services;
 using QuizSignalR.Hubs;
 using QuizSignalR.Infrastructure;
 
@@ -19,6 +21,8 @@ namespace QuizSignalR
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddSignalR();
+
+            builder.Services.AddScoped<IQuestionService, QuestionService>();
 
             var app = builder.Build();
 
