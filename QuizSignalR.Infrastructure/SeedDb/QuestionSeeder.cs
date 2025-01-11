@@ -40,7 +40,7 @@ public class QuestionSeeder
             },
             new Question()
             {
-                Id = Guid.Parse("a5324881-7b48-4b08-88e8-108b74040815"),
+                Id = Guid.Parse("b5865ece-b373-4e29-a90b-345fa7841a7d"),
                 QuestionText = "Къде е обесен Васил Левски ?"
             },
             new Question()
@@ -50,33 +50,48 @@ public class QuestionSeeder
             },
             new Question()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.Parse("d8fac898-fcd0-489e-bcd1-eb5130b204cf"),
                 QuestionText = "Кой български възрожденец е известен със своята поезия и романи, като 'Под игото' ?"
             },
             new Question()
             {
-                Id = Guid.NewGuid(),
-                QuestionText = "Кой български възрожденец е известен със своята поезия и романи, като 'Под игото' ?"
+                Id = Guid.Parse("98cb2e68-9ba4-4ad3-bfe5-c1cd7d7cfbce"),
+                QuestionText = "Къде е роден Христо Ботев ?"
             },
             new Question()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.Parse("7ff85635-eff0-493d-89fa-af59c287b055"),
                 QuestionText = "Коя организация Васил Левски създава заедно с други революционери ?"
             },
             new Question()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.Parse("b1931a4c-3c43-47d1-8be8-1fe99bb42062"),
                 QuestionText = "Кой е известният вестник, основан от Христо Ботев ?"
             },
             new Question()
             {
-                Id = Guid.NewGuid(),
-                QuestionText = "Кой е известният вестник, основан от Христо Ботев ?"
+                Id = Guid.Parse("3e74ff65-3933-4e4c-969d-81d21b2f6ec1"),
+                QuestionText = "Как се казват родителите на Левски?"
             },
             new Question()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.Parse("6481fde2-f911-426d-be91-d06d51c8bea3"),
                 QuestionText = "Какво прави Васил Левски, за да подготви народа за въстание ?"
+            },
+            new Question()
+            {
+                Id = Guid.Parse("7cbcc9c0-dc9b-4796-a901-a076957fc266"),
+                QuestionText = "Кога е роден Васил Левски ?"
+            },
+            new Question()
+            {
+                Id = Guid.Parse("a2e558f9-52ff-4f81-880e-df08729cb403"),
+                QuestionText = "Какво е направил Васил Левски, след като е завършил основното си образование ?"
+            },
+            new Question()
+            {
+                Id = Guid.Parse("181bcfcc-8552-4630-b5a9-7de966439d56"),
+                QuestionText = "Как се казва кораба, с който Ботевата чета стига до България ?"
             }
         };
     }

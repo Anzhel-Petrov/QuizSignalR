@@ -179,28 +179,28 @@ public class AnswerSeeder
             new Answer()
             {
                 Id = Guid.NewGuid(),
-                QuestionId = Guid.Parse("a5324881-7b48-4b08-88e8-108b74040815"),
+                QuestionId = Guid.Parse("b5865ece-b373-4e29-a90b-345fa7841a7d"),
                 AnswerText = "В Пловдив",
                 IsCorrect = false
             },
             new Answer()
             {
                 Id = Guid.NewGuid(),
-                QuestionId = Guid.Parse("a5324881-7b48-4b08-88e8-108b74040815"),
+                QuestionId = Guid.Parse("b5865ece-b373-4e29-a90b-345fa7841a7d"),
                 AnswerText = "В Карлово",
                 IsCorrect = false
             },
             new Answer()
             {
                 Id = Guid.NewGuid(),
-                QuestionId = Guid.Parse("a5324881-7b48-4b08-88e8-108b74040815"),
+                QuestionId = Guid.Parse("b5865ece-b373-4e29-a90b-345fa7841a7d"),
                 AnswerText = "Близо до София",
                 IsCorrect = true
             },
             new Answer()
             {
                 Id = Guid.NewGuid(),
-                QuestionId = Guid.Parse("a5324881-7b48-4b08-88e8-108b74040815"),
+                QuestionId = Guid.Parse("b5865ece-b373-4e29-a90b-345fa7841a7d"),
                 AnswerText = "В Търново",
                 IsCorrect = false
             },
@@ -230,6 +230,258 @@ public class AnswerSeeder
                 Id = Guid.NewGuid(),
                 QuestionId = Guid.Parse("4835fbc9-1993-4fa8-b83d-0d799b22ef32"),
                 AnswerText = "Търговците от двете страни трябва да бъдат упълномощавани с грамоти, снабдени с печати",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("d8fac898-fcd0-489e-bcd1-eb5130b204cf"),
+                AnswerText = "Иван Вазов",
+                IsCorrect = true
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("d8fac898-fcd0-489e-bcd1-eb5130b204cf"),
+                AnswerText = "Климент Охридски",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("d8fac898-fcd0-489e-bcd1-eb5130b204cf"),
+                AnswerText = "Йоаким Груев",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("d8fac898-fcd0-489e-bcd1-eb5130b204cf"),
+                AnswerText = "Васил Левски",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("98cb2e68-9ba4-4ad3-bfe5-c1cd7d7cfbce"),
+                AnswerText = "В София",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("98cb2e68-9ba4-4ad3-bfe5-c1cd7d7cfbce"),
+                AnswerText = "В Калофер",
+                IsCorrect = true
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("98cb2e68-9ba4-4ad3-bfe5-c1cd7d7cfbce"),
+                AnswerText = "В Пловдив",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("98cb2e68-9ba4-4ad3-bfe5-c1cd7d7cfbce"),
+                AnswerText = "В Русе",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("7ff85635-eff0-493d-89fa-af59c287b055"),
+                AnswerText = "Български революционен централен комитет",
+                IsCorrect = true
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("7ff85635-eff0-493d-89fa-af59c287b055"),
+                AnswerText = "Българско възраждане",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("7ff85635-eff0-493d-89fa-af59c287b055"),
+                AnswerText = "Български учителски съюз",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("7ff85635-eff0-493d-89fa-af59c287b055"),
+                AnswerText = "Българска православна църква",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("b1931a4c-3c43-47d1-8be8-1fe99bb42062"),
+                AnswerText = "‘Свобода’",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("b1931a4c-3c43-47d1-8be8-1fe99bb42062"),
+                AnswerText = "‘Пирин’",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("b1931a4c-3c43-47d1-8be8-1fe99bb42062"),
+                AnswerText = "‘Знаме’",
+                IsCorrect = true
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("b1931a4c-3c43-47d1-8be8-1fe99bb42062"),
+                AnswerText = "‘Нов Живот’",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("3e74ff65-3933-4e4c-969d-81d21b2f6ec1"),
+                AnswerText = "Яна и Иван",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("3e74ff65-3933-4e4c-969d-81d21b2f6ec1"),
+                AnswerText = "Мария и Петър",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("3e74ff65-3933-4e4c-969d-81d21b2f6ec1"),
+                AnswerText = "Гина и Иван",
+                IsCorrect = true
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("3e74ff65-3933-4e4c-969d-81d21b2f6ec1"),
+                AnswerText = "Яна и Христо",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("6481fde2-f911-426d-be91-d06d51c8bea3"),
+                AnswerText = "Пише стихотворения",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("6481fde2-f911-426d-be91-d06d51c8bea3"),
+                AnswerText = "Пътува из страната и създава тайни революционни комитети",
+                IsCorrect = true
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("6481fde2-f911-426d-be91-d06d51c8bea3"),
+                AnswerText = "Организира музикални събития",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("6481fde2-f911-426d-be91-d06d51c8bea3"),
+                AnswerText = "Строи училища",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("7cbcc9c0-dc9b-4796-a901-a076957fc266"),
+                AnswerText = "3 март 1840 г.",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("7cbcc9c0-dc9b-4796-a901-a076957fc266"),
+                AnswerText = "18 юли 1837 г.",
+                IsCorrect = true
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("7cbcc9c0-dc9b-4796-a901-a076957fc266"),
+                AnswerText = "1 ноември 1850 г.",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("7cbcc9c0-dc9b-4796-a901-a076957fc266"),
+                AnswerText = "24 май 1835 г.",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("a2e558f9-52ff-4f81-880e-df08729cb403"),
+                AnswerText = "Станал е войник",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("a2e558f9-52ff-4f81-880e-df08729cb403"),
+                AnswerText = "Решил е да стане монах и приема името Игнатий",
+                IsCorrect = true
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("a2e558f9-52ff-4f81-880e-df08729cb403"),
+                AnswerText = "Станал е търговец",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("a2e558f9-52ff-4f81-880e-df08729cb403"),
+                AnswerText = "Отишъл е да живее в чужбина",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("181bcfcc-8552-4630-b5a9-7de966439d56"),
+                AnswerText = "Радецки",
+                IsCorrect = true
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("181bcfcc-8552-4630-b5a9-7de966439d56"),
+                AnswerText = "Дунав",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("181bcfcc-8552-4630-b5a9-7de966439d56"),
+                AnswerText = "Шипка",
+                IsCorrect = false
+            },
+            new Answer()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = Guid.Parse("181bcfcc-8552-4630-b5a9-7de966439d56"),
+                AnswerText = "Вола",
                 IsCorrect = false
             },
         };
