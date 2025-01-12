@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using QuizSignalR.Core.Contracts;
 using QuizSignalR.Infrastructure.Models;
 
 namespace QuizSignalR.Hubs;
@@ -6,12 +7,18 @@ namespace QuizSignalR.Hubs;
 public class QuizHub : Hub
 {
     private static GameState _gameState = new GameState();
+    private readonly IGameService _gameService;
+
+    public QuizHub(IGameService gameService)
+    {
+        this._gameService = gameService;
+    }
 
     public override async Task OnConnectedAsync()
     {
         await Clients.Caller.SendAsync("ReceiveMessage", "Server", "Welcome! Please enter your name.");
-        if (_gameState.Questions.Count == 0)
-            //_gameState.Questions = _questions;
+        //if (_gameState.Questions.Count == 0)
+        //    //_gameState.Questions = _questions;
         await base.OnConnectedAsync();
     }
 
@@ -28,7 +35,7 @@ public class QuizHub : Hub
             var player = new Player { Name = playerName, ConnectionId = Context.ConnectionId, Score = 0 };
             _gameState.Players.Add(Context.ConnectionId, player);
             await Clients.All.SendAsync("UpdatePlayers", _gameState.Players.Values.ToList());
-            await Clients.All.SendAsync("ReceiveMessage", player.Name, "Joined the lobby!");
+            await _gameService.SendMessage(player.Name, "Joined the lobby!");
             if (_gameState.Players.Count == 2)
             {
                 await StartGame();
@@ -95,7 +102,7 @@ public class QuizHub : Hub
 
     public async Task SendCurrentQuestion()
     {
-        if (_gameState.CurrentQuestion != null)
-            await Clients.All.SendAsync("ReceiveQuestion", _gameState.CurrentQuestion);
+        //if (_gameState.CurrentQuestion != null)
+        await _gameService.SendQuestion();
     }
 }

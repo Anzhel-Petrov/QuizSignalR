@@ -42,6 +42,7 @@
         });
 
         connection.on("ReceiveQuestion", (question) => {
+            console.log(question);
             displayQuestion(question);
         });
 
@@ -106,14 +107,14 @@
             const questionArea = document.getElementById("question-area");
             const optionsArea = document.getElementById("options-area");
            
-            questionArea.textContent = question.text;
+            questionArea.textContent = question.questionText;
             optionsArea.innerHTML = ''; // Clear old options
             initializeProgressBar();
 
-            question.options.forEach(option => {
+            question.answers.forEach(answer => {
                 const button = document.createElement("button");
-                button.textContent = option;
-                button.addEventListener("click", () => handleAnswer(option));
+                button.textContent = answer.answerText;
+                button.addEventListener("click", () => handleAnswer(answer));
                 optionsArea.appendChild(button);
             });
 

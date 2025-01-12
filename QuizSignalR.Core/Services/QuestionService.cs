@@ -8,7 +8,6 @@ namespace QuizSignalR.Core.Services;
 public class QuestionService : IQuestionService
 {
     private readonly QuizDbContext _context;
-    private readonly IHubContext<QuizHub> _hubContext;
     private readonly HashSet<Guid> _askedQuestions = new HashSet<Guid>();
 
     public QuestionService(QuizDbContext context)
