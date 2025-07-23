@@ -16,7 +16,8 @@ public class GameService : IGameService
 
     public async Task SendQuestion()
     {
-        var randomQuestion = await _questionService.GetRandomQuestion();
+        //var randomQuestion = await _questionService.GetRandomQuestion();
+        var questions = await _questionService.GetQuestions();
         //if (randomQuestion.Answers.Any(a => a.Question == randomQuestion))
         //{
         //    Console.WriteLine("Circular reference detected!");

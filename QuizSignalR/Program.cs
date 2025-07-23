@@ -30,6 +30,7 @@ namespace QuizSignalR
             builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<IGameService, GameService>();
+            builder.Services.AddSingleton<IGameStateService, GameStateService>();
 
             var app = builder.Build();
 

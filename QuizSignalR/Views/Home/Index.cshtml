@@ -50,10 +50,10 @@
             displayPlayers(players);
         });
 
-        connection.on("PlayerAnswered", (player, isCorrect, players) => {
+        connection.on("PlayerAnswered", (player, answerText, isCorrect, players) => {
             displayPlayers(players);
            const li = document.createElement("li");
-           li.textContent = `${player.name} has answered and got it ${isCorrect ? 'right' : 'wrong'}!`;
+            li.textContent = `${player.name} has answered "${answerText}" and got it ${isCorrect ? 'right' : 'wrong'}!`;
            document.getElementById("messagesList").appendChild(li);
         });
 
@@ -89,7 +89,7 @@
 
         function startTimer(onTimeUp) {
             clearInterval(downloadTimer); // Clear any existing timer
-            timeleft = 10;
+            timeleft = 60;
             const progressBar = document.getElementById("progressBar");
 
             downloadTimer = setInterval(() => {
@@ -97,7 +97,7 @@
                     clearInterval(downloadTimer);
                     onTimeUp(); // Callback when time runs out
                 } else {
-                    progressBar.value = 10 - timeleft;
+                    progressBar.value = 60 - timeleft;
                     timeleft -= 1;
                 }
             }, 1000);
@@ -122,6 +122,11 @@
         }
 
         function handleAnswer(answer) {
+            const optionsArea = document.getElementById("options-area");
+
+            for (const child of optionsArea.children) {
+                child.disabled = true;
+            }
             connection.invoke("AnswerQuestion", answer, timeleft);
         }
 

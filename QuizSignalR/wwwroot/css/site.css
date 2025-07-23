@@ -1,14 +1,4 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+/*.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
@@ -19,4 +9,38 @@ html {
 
 body {
   margin-bottom: 60px;
+}*/
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    box-sizing: border-box;
+    font: 14px/1.5 Verdana, sans-serif;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    font: inherit;
+/*    line-height: 1.5;*/
+    background-color: #202020;
+    color: #ffffff;
+}
+
+#game-area {
+    background-color: #808080;
+    padding: 2em;
+    border-radius: 0.3em;
+    box-shadow: 0 0 1em 0 rgb(0, 0, 0, 0.2);
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
 }
