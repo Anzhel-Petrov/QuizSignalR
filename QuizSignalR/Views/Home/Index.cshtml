@@ -35,9 +35,9 @@
             .withUrl("/quizhub") // Matches your SignalR hub endpoint
             .build();
 
-        connection.on("ReceiveMessage", (user, message) => {
+        connection.on("ReceiveMessage", playerMessage => {
             const li = document.createElement("li");
-            li.textContent = `${user}: ${message}`;
+            li.textContent = `${playerMessage.player}: ${playerMessage.message}`;
             document.getElementById("messagesList").appendChild(li);
         });
 
@@ -50,10 +50,10 @@
             displayPlayers(players);
         });
 
-        connection.on("PlayerAnswered", (player, answerText, isCorrect, players) => {
-            displayPlayers(players);
+        connection.on("PlayerAnswered", playerAnswerData => {
+           //displayPlayers(players);
            const li = document.createElement("li");
-            li.textContent = `${player.name} has answered "${answerText}" and got it ${isCorrect ? 'right' : 'wrong'}!`;
+           li.textContent = `${playerAnswerData.playerName} has answered "${playerAnswerData.answerText}" and got it ${playerAnswerData.isCorrect ? 'right' : 'wrong'} - he get's ${playerAnswerData.isCorrect ? playerAnswerData.score : 'no points'}!`;
            document.getElementById("messagesList").appendChild(li);
         });
 

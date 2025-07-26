@@ -5,5 +5,6 @@ namespace QuizSignalR.Core.Contracts;
 public interface INotificationService
 {
     Task SendQuestion(Question question);
-    Task SendMessage(string player, string message);
+    Task SendMessageToAllClientsAsync<T> (string method, T data);
+    Task SendMessageClient<T>(string contextConnectionId, string method, T data);
 }

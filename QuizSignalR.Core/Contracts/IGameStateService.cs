@@ -1,19 +1,20 @@
 ﻿using QuizSignalR.Infrastructure.Models;
+using System.Collections.Concurrent;
 
 namespace QuizSignalR.Core.Contracts
 {
     public interface IGameStateService
     {
-        // Method to add or update a player's answer
-        void AddOrUpdatePlayerAnswer(string playerId, Answer answer, double timeTaken);
-
-        // Method to retrieve all player answers
-        Dictionary<string, (Answer answer, double timeTaken)> GetPlayerAnswers();
-
-        // Method to check if all players have answered
-        bool HaveAllPlayersAnswered(int expectedPlayerCount);
-
-        // Method to clear all player answers
-        void ClearPlayerAnswers();
+        bool GameHasEnded { get; set; }
+        ICollection<Question> Questions { get; set; }
+        bool HaveAllPlayersAnswered();
+        Task RegisterPlayers(string contextConnectionId, string playerName);
+        Task SendQuestion();
+        Task ProcessAnswers(string contextConnectionId);
+        Task<int> GetPlayerCount();
+        ICollection<Player> GetPlayers();
+        Task<bool> RegisterAnswer(string contextConnectionId, Answer answer, double timeTaken);
+        Task LoadQuestions(int numberOfQuestions);
+        int GetQuestionsCount();
     }
 }

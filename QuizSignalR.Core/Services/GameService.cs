@@ -1,5 +1,7 @@
-﻿using System.Text.Json;
+﻿using System.Numerics;
+using System.Text.Json;
 using QuizSignalR.Core.Contracts;
+using QuizSignalR.Infrastructure.Models;
 
 namespace QuizSignalR.Core.Services;
 
@@ -16,8 +18,8 @@ public class GameService : IGameService
 
     public async Task SendQuestion()
     {
-        //var randomQuestion = await _questionService.GetRandomQuestion();
-        var questions = await _questionService.GetQuestions();
+        var randomQuestion = await _questionService.GetRandomQuestion();
+        //var questions = await _questionService.GetQuestions();
         //if (randomQuestion.Answers.Any(a => a.Question == randomQuestion))
         //{
         //    Console.WriteLine("Circular reference detected!");
@@ -31,8 +33,18 @@ public class GameService : IGameService
         await _notificationService.SendQuestion(randomQuestion);
     }
 
-    public async Task SendMessage(string player, string message)
+    public async Task SendMessageToAllClientsAsync(string method, string player, string message)
     {
-        await _notificationService.SendMessage(player, message);
+        await _notificationService.SendMessageToAllClientsAsync(method, new PlayerMessage(player, message));
+    }
+
+    public async Task SendMessageToAllClientsAsync(string method, Dictionary<string, Player> currentPlayers)
+    {
+        await _notificationService.SendMessageToAllClientsAsync( method, currentPlayers);
+    }
+
+    public async Task SendMessageClient(string contextConnectionId, string method, string player, string message)
+    {
+        await _notificationService.SendMessageClient(contextConnectionId, method, new PlayerMessage(player, message));
     }
 }

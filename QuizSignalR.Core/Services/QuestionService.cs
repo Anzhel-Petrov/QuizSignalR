@@ -15,7 +15,7 @@ public class QuestionService : IQuestionService
         this._context = context;
     }
 
-    public async Task<ICollection<Question>> GetQuestions(int count = 10)
+    public async Task<ICollection<Question>>LoadRandomQuestions(int count = 10)
     {
         return await _context.Questions
             .Include(q => q.Answers)

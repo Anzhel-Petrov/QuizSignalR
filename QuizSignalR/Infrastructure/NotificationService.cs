@@ -18,8 +18,13 @@ public class NotificationService : INotificationService
         await _hubContext.Clients.All.SendAsync("ReceiveQuestion", question);
     }
 
-    public async Task SendMessage(string player, string message)
+    public async Task SendMessageToAllClientsAsync<T>(string method, T data)
     {
-        await _hubContext.Clients.All.SendAsync("ReceiveMessage", player, message);
+        await _hubContext.Clients.All.SendAsync(method, data);
+    }
+
+    public async Task SendMessageClient<T>(string contextConnectionId, string method, T data)
+    {
+        await _hubContext.Clients.Client(contextConnectionId).SendAsync(method, data);
     }
 }

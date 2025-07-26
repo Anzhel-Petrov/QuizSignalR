@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using QuizSignalR.Core.Contracts;
+using QuizSignalR.Core.Models;
 using QuizSignalR.Core.Services;
 using QuizSignalR.Hubs;
 using QuizSignalR.Infrastructure;
@@ -27,10 +28,11 @@ namespace QuizSignalR
                 o.PayloadSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles; // Prevents circular reference issues
             });
 
+            builder.Services.AddSingleton<GameStateContainer>();
+            builder.Services.AddScoped<IGameStateService, GameStateService>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
-            builder.Services.AddScoped<IGameService, GameService>();
-            builder.Services.AddSingleton<IGameStateService, GameStateService>();
+            //builder.Services.AddScoped<IGameService, GameService>();
 
             var app = builder.Build();
 
