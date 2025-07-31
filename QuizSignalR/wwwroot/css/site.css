@@ -39,6 +39,32 @@ body {
     box-shadow: 0 0 1em 0 rgb(0, 0, 0, 0.2);
 }
 
+#registerButton {
+    display: block;
+    padding: 0.2em 0.5em;
+    margin-top: 0.5em;
+    border-radius: 0.1em;
+    border: none;
+}
+
+/*#options-area {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+    #options-area > button {
+        flex: 50%;*/ /* or - flex: 0 50% - or - flex-basis: 50% - */
+        /*demo*/
+        /*box-shadow: 0 0 0 1px black;*/
+/*        margin: 1em 1em;*/
+        /*background-color: white;
+        color: black;
+        display: block;
+        padding: 0.2em 0.5em;
+        border-radius: 1em;
+        border: none;
+    }*/
+
 @media (min-width: 768px) {
     html {
         font-size: 16px;

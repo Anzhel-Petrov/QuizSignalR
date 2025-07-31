@@ -6,7 +6,6 @@
         /* Basic styling */
         #game-area { width: 80%; margin: 20px auto; border: 1px solid #ccc; padding: 20px; }
         #question-area { font-size: 18px; margin-bottom: 20px; }
-        #options-area button { margin-right: 10px; }
         #players-area { margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 10px;}
         .player { margin-bottom: 10px; }
     </style>
@@ -39,10 +38,11 @@
             const li = document.createElement("li");
             li.textContent = `${playerMessage.player}: ${playerMessage.message}`;
             document.getElementById("messagesList").appendChild(li);
+            if (playerMessage.message === 'Joined the lobby!') document.getElementById("registerButton").disabled = true;
         });
 
         connection.on("ReceiveQuestion", (question) => {
-            console.log(question);
+            //console.log(question);
             displayQuestion(question);
         });
 
@@ -89,7 +89,7 @@
 
         function startTimer(onTimeUp) {
             clearInterval(downloadTimer); // Clear any existing timer
-            timeleft = 60;
+            timeleft = 10;
             const progressBar = document.getElementById("progressBar");
 
             downloadTimer = setInterval(() => {
@@ -97,7 +97,7 @@
                     clearInterval(downloadTimer);
                     onTimeUp(); // Callback when time runs out
                 } else {
-                    progressBar.value = 60 - timeleft;
+                    progressBar.value = 10 - timeleft;
                     timeleft -= 1;
                 }
             }, 1000);
@@ -118,7 +118,7 @@
                 optionsArea.appendChild(button);
             });
 
-            startTimer(() => connection.invoke("NextQuestion")); // Restart timer with next question logic
+            startTimer(() => connection.invoke("AnswerQuestion")); // Restart timer with next question logic
         }
 
         function handleAnswer(answer) {
@@ -133,7 +133,7 @@
         function gameOver(players) {
             clearInterval(downloadTimer);
             const li = document.createElement("li");
-            var winner = players.reduce((prev, current) => (prev.score > current.score) ? prev : current)
+            //var winner = players.reduce((prev, current) => (prev.score > current.score) ? prev : current)
             li.textContent = pickWinner(players);
             document.getElementById("messagesList").appendChild(li);
             document.getElementById("timer-area").innerHTML = '';

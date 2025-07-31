@@ -2,6 +2,7 @@
 using QuizSignalR.Core.Contracts;
 using QuizSignalR.Hubs;
 using QuizSignalR.Infrastructure.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace QuizSignalR.Infrastructure;
 
@@ -13,9 +14,10 @@ public class NotificationService : INotificationService
         this._hubContext = hubContext;
     }
 
-    public async Task SendQuestion(Question question)
+    public async Task SendQuestion(string roomId, Question question)
     {
-        await _hubContext.Clients.All.SendAsync("ReceiveQuestion", question);
+        //await _hubContext.Clients.All.SendAsync("ReceiveQuestion", question);
+        await _hubContext.Clients.Group(roomId).SendAsync("ReceiveQuestion", question);
     }
 
     public async Task SendMessageToAllClientsAsync<T>(string method, T data)
@@ -26,5 +28,15 @@ public class NotificationService : INotificationService
     public async Task SendMessageClient<T>(string contextConnectionId, string method, T data)
     {
         await _hubContext.Clients.Client(contextConnectionId).SendAsync(method, data);
+    }
+
+    public async Task AddToGroupAsync(string contextConnectionId, string gameId)
+    {
+        await _hubContext.Groups.AddToGroupAsync(contextConnectionId, gameId);
+    }
+
+    public async Task SendMessageGroupAsync<T>(string roomId, string method, T data)
+    {
+        await _hubContext.Clients.Group(roomId).SendAsync(method, data);
     }
 }

@@ -1,70 +1,68 @@
 ﻿using QuizSignalR.Core.Contracts;
 using QuizSignalR.Core.Models;
 using QuizSignalR.Infrastructure.Models;
-using System.Collections.Concurrent;
 
 namespace QuizSignalR.Core.Services
 {
     public class GameStateService : IGameStateService
     {
         private readonly INotificationService _notificationService;
-        private readonly IQuestionService _questionService;
-        private readonly GameStateContainer _gameStateContainer;
-        private bool _gameHasEnded;
-        private ICollection<Question> _questions;
+        private readonly IGameLobbyService _gameLobbyService;
 
-        public GameStateService(INotificationService notificationService, IQuestionService questionService, GameStateContainer gameStateContainer)
+        public GameStateService(
+            INotificationService notificationService,
+            IGameLobbyService gameLobbyService)
         {
             _notificationService = notificationService;
-            _questionService = questionService;
-            _gameStateContainer = gameStateContainer;
-            this._questions = new HashSet<Question>();
-        }
-
-        public ICollection<Question> Questions { get => this._questions; set => this._questions = value; }
-        public Question CurrentQuestion { get; set; } = null!;
-        public bool GameHasEnded => this._gameHasEnded;
-        bool IGameStateService.GameHasEnded { get => this._gameHasEnded; set => this._gameHasEnded = value; }
-        public ConcurrentDictionary<string, (Player player, Answer answer, double timeTaken)> GetPlayerAnswers()
-        {
-            return _gameStateContainer.PlayersAnswers;
-        }
-
-        public bool HaveAllPlayersAnswered()
-        {
-            throw new NotImplementedException();
+            _gameLobbyService = gameLobbyService;
         }
 
         public async Task RegisterPlayers(string contextConnectionId, string playerName)
         {
-            var currentPlayers = _gameStateContainer.Players;
-            if (!_gameStateContainer.PlayersAnswers.ContainsKey(contextConnectionId))
+            var player = new Player { Name = playerName, ConnectionId = contextConnectionId, Score = 0 };
+            var result = await _gameLobbyService.TryAddPlayerToGameAsync(player);
+
+            switch (result.Status)
             {
-                if (currentPlayers.Values.Any(p => p.Name == playerName))
-                {
+                case AddPlayerResultStatus.EmptyName:
+                    await _notificationService.SendMessageClient(contextConnectionId, "ReceiveMessage", new PlayerMessage("Server", "Name cannot be emty!"));
+                    break;
+                case AddPlayerResultStatus.NameTaken:
                     await _notificationService.SendMessageClient(contextConnectionId, "ReceiveMessage", new PlayerMessage("Server", $"There is a player with name {playerName} already in the lobby!"));
-                    return;
-                }
+                    break;
+                case AddPlayerResultStatus.AlreadyRegisteredInGame:
+                    await _notificationService.SendMessageClient(contextConnectionId, "ReceiveMessage", new PlayerMessage("Server", "You are already registered!"));
+                    break;
+                case AddPlayerResultStatus.GameFull:
+                    await _notificationService.SendMessageClient(contextConnectionId, "ReceiveMessage", new PlayerMessage("Server", "Sorry, the game is already full!"));
+                    break;
+                case AddPlayerResultStatus.Success:
+                    var gameSession = result.GameSession!;
 
-                var player = new Player { Name = playerName, ConnectionId = contextConnectionId, Score = 0 };
-                currentPlayers.TryAdd(contextConnectionId, player);
-                await _notificationService.SendMessageToAllClientsAsync("UpdatePlayers", currentPlayers.Values.ToList());
-                await _notificationService.SendMessageToAllClientsAsync("ReceiveMessage", new PlayerMessage(player.Name, "Joined the lobby!"));
+                    await _notificationService.AddToGroupAsync(contextConnectionId, gameSession.GameId);
+                    await _notificationService.SendMessageGroupAsync(gameSession.GameId, "ReceiveMessage", new PlayerMessage(player.Name, "Joined the lobby!"));
 
+                    if (gameSession.IsFull)
+                    {
+                        await SendQuestion(gameSession);
+                    }
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                await _notificationService.SendMessageClient(contextConnectionId, "ReceiveMessage", new PlayerMessage("Server", "You are already registered!"));
-            }
+
+            //_gameSession.Players.TryAdd(contextConnectionId, player);
+            //var gameSession = await _gameLobbyService.FindOrCreateGameAsync(player);
+            //await _notificationService.AddToGroupAsync(contextConnectionId, gameSession.GameId);
+            ////await _notificationService.SendMessageGroupAsync(gameSession.GameId, "UpdatePlayers", currentPlayers.Values.ToList());
+            //await _notificationService.SendMessageGroupAsync(gameSession.GameId, "ReceiveMessage", new PlayerMessage(player.Name, "Joined the lobby!"));
+
+            ////await _notificationService.SendMessageToAllClientsAsync("UpdatePlayers", currentPlayers.Values.ToList());
+            ////await _notificationService.SendMessageToAllClientsAsync("ReceiveMessage", new PlayerMessage(player.Name, "Joined the lobby!"));
+
         }
 
-        public async Task LoadQuestions(int numberOfQuestions)
-        {
-            _gameStateContainer.Questions = await _questionService.LoadRandomQuestions(numberOfQuestions);
-            var foo = GetQuestionsCount();
-        }
-
-        public async Task SendQuestion()
+        public async Task SendQuestion(GameSession gameSession)
         {
             //var randomQuestion = await _questionService.GetRandomQuestion();
             //if (randomQuestion.Answers.Any(a => a.Question == randomQuestion))
@@ -78,79 +76,69 @@ namespace QuizSignalR.Core.Services
             //    WriteIndented = true
             //});
             //if (_gameState.CurrentQuestion != null)
-            if (_gameStateContainer.CurrentQuestionIndex >= _gameStateContainer.Questions.Count)
+
+            if (gameSession.CurrentQuestionIndex >= gameSession.Questions.Count)
             {
-                //_gameStateService.GameHasEnded = true;
-                await _notificationService.SendMessageToAllClientsAsync("GameOver", _gameStateContainer.Players);
+                await EndGame(gameSession);
+                return;
             }
-            else
-            {
-                await _notificationService.SendQuestion(_gameStateContainer.Questions.ToList()[_gameStateContainer.CurrentQuestionIndex]);
-                _gameStateContainer.CurrentQuestionIndex++;
-            }
+
+            await _notificationService.SendQuestion(gameSession.GameId, gameSession.Questions.ToList()[gameSession.NextQuestionIndex]);
         }
 
-        public async Task<bool> RegisterAnswer(string contextConnectionId, Answer answer, double timeTaken)
+        private async Task EndGame(GameSession gameSession)
         {
-            var currentPlayers = _gameStateContainer.Players;
-            var playersAnswers = _gameStateContainer.PlayersAnswers;
+            gameSession.GameHasEnded = true;
+            await _notificationService.SendMessageGroupAsync(gameSession.GameId, "GameOver", gameSession.Players.Values);
+            //await Task.Delay(TimeSpan.FromSeconds(10));
+            _gameLobbyService.RemoveGame(gameSession.GameId);
+        }
 
-            if (!currentPlayers.TryGetValue(contextConnectionId, out Player currentPlayer))
+        public async Task RegisterAnswer(string contextConnectionId, Answer answer, double timeTaken)
+        {
+            var gamseSession = _gameLobbyService.GetGameSessionForPlayer(contextConnectionId);
+            if (gamseSession == null || gamseSession.GameHasEnded)
+            {
+                return;
+            }
+
+            if (!gamseSession.Players.TryGetValue(contextConnectionId, out Player currentPlayer))
             {
                 await _notificationService.SendMessageClient(contextConnectionId, "ReceiveMessage", "Player not found.");
-                return false;
             }
 
-            if (playersAnswers.ContainsKey(currentPlayer.ConnectionId))
+            if (gamseSession.PlayersAnswers.ContainsKey(currentPlayer.ConnectionId))
             {
                 await _notificationService.SendMessageClient(contextConnectionId, "ReceiveMessage", "You have already answered this question!");
-                return false;
             }
 
-            _gameStateContainer.PlayersAnswers[contextConnectionId] = (currentPlayer, answer, timeTaken);
-            return _gameStateContainer.PlayersAnswers.Count == 2;
+            gamseSession.PlayersAnswers[contextConnectionId] = (currentPlayer, answer, timeTaken);
+            if (gamseSession.PlayersAnswers.Count == 2)
+            {
+                await ProcessAnswers(gamseSession);
+            }
         }
 
-        public async Task ProcessAnswers(string contextConnectionId)
+        public async Task ProcessAnswers(GameSession gameSession)
         {
-            var currentPlayers = _gameStateContainer.Players;
-            var playersAnswers = _gameStateContainer.PlayersAnswers;
-
-            if (playersAnswers.Count == 2)
+            if (gameSession != null && gameSession.Players.Count == 2)
             {
-                foreach (var playerAnswer in playersAnswers)
+                foreach (var playerAnswer in gameSession.PlayersAnswers)
                 {
                     var (playerId, (Player, PlayerAnswer, PlayerTime)) = playerAnswer;
                     if (PlayerAnswer.IsCorrect)
                     {
                         Player.Score += (int)PlayerTime;
                     }
-                    await _notificationService.SendMessageToAllClientsAsync("PlayerAnswered", new PlayerAnswerData(Player.Name, PlayerAnswer.AnswerText, PlayerAnswer.IsCorrect, (int)PlayerTime));
+                    await _notificationService.SendMessageGroupAsync(gameSession.GameId, "PlayerAnswered", new PlayerAnswerData(Player.Name, PlayerAnswer.AnswerText, PlayerAnswer.IsCorrect, (int)PlayerTime));
                 }
 
-                // Notify both players about the results or proceed to the next question
                 //await _notificationService.SendMessageToAll("Both players have answered. Proceeding to the next question.");
-                var foo = playersAnswers.Values;
-                await _notificationService.SendMessageToAllClientsAsync("UpdatePlayers", currentPlayers.Values.ToList());
+                await _notificationService.SendMessageGroupAsync(gameSession.GameId, "UpdatePlayers", gameSession.Players.Values.ToList());
 
-                playersAnswers.Clear();
+                gameSession.PlayersAnswers.Clear();
+                await SendQuestion(gameSession);
             }
-        }
-
-        public Task<int> GetPlayerCount()
-        {
-            int playerCount = _gameStateContainer.Players.Count;
-            return Task.FromResult(playerCount);
-        }
-
-        public ICollection<Player> GetPlayers()
-        {
-            return _gameStateContainer.Players.Values.ToList();
-        }
-
-        public int GetQuestionsCount()
-        {
-            return _gameStateContainer.Questions.Count;
         }
     }
 }
