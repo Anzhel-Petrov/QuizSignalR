@@ -20,6 +20,12 @@ public class QuizHub : Hub
         await base.OnConnectedAsync();
     }
 
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        await _gameStateService.Disconnect(Context.ConnectionId);
+        await base.OnDisconnectedAsync(exception);
+    }
+
     public async Task RegisterPlayer(string playerName)
     {
         await _gameStateService.RegisterPlayers(Context.ConnectionId, playerName);

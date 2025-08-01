@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using QuizSignalR.Core.Contracts;
 using QuizSignalR.Core.Models;
+using QuizSignalR.Core.Models.Enums;
 using QuizSignalR.Infrastructure.Models;
 using System.Collections.Concurrent;
 

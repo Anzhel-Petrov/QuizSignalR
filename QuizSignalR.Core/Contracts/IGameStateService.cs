@@ -9,6 +9,6 @@ namespace QuizSignalR.Core.Contracts
         Task RegisterPlayers(string contextConnectionId, string playerName);
         Task SendQuestion(GameSession gameSession);
         Task RegisterAnswer(string contextConnectionId, Answer answer, double timeTaken);
-        //Task LoadQuestions(int numberOfQuestions);
+        Task Disconnect(string contextConnectionId);
     }
 }

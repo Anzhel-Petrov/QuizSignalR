@@ -1,4 +1,6 @@
-﻿namespace QuizSignalR.Core.Models
+﻿using QuizSignalR.Core.Models.Enums;
+
+namespace QuizSignalR.Core.Models
 {
     public class AddPlayerResult
     {

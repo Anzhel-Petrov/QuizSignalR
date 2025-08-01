@@ -1,6 +1,8 @@
 ﻿using QuizSignalR.Core.Contracts;
 using QuizSignalR.Core.Models;
+using QuizSignalR.Core.Models.Enums;
 using QuizSignalR.Infrastructure.Models;
+using QuizSignalR.Infrastructure.Models.Enums;
 
 namespace QuizSignalR.Core.Services
 {
@@ -89,33 +91,70 @@ namespace QuizSignalR.Core.Services
         private async Task EndGame(GameSession gameSession)
         {
             gameSession.GameHasEnded = true;
-            await _notificationService.SendMessageGroupAsync(gameSession.GameId, "GameOver", gameSession.Players.Values);
+
+            string engGameMessage;
+            var disconnectedPlayer = gameSession.Players.Values.FirstOrDefault(p => p.Status == PlayerStatus.Disconnected);
+
+            if (disconnectedPlayer != null)
+            {
+                var winner = gameSession.Players.Values.FirstOrDefault(p => p.Status == PlayerStatus.Active);
+
+                if (winner != null)
+                {
+                    engGameMessage = $"Game Over! {disconnectedPlayer.Name} disconnected. {winner.Name} is the winner!";
+                }
+                else
+                {
+                    // This covers the edge case where both players disconnect almost simultaneously.
+                    engGameMessage = "Game Over! Both players have disconnected.";
+                }
+            }
+            else
+            {
+                var orderedPlayers = gameSession.Players.Values.OrderByDescending(p => p.Score).ToList();
+                var winner = orderedPlayers[0];
+                var loser = orderedPlayers[1];
+
+                if (winner.Score > loser.Score)
+                {
+                    engGameMessage = $"Game Over! {winner.Name} wins with a final score of {winner.Score} to {loser.Name}'s {loser.Score}!";
+                }
+                else // Their scores are equal.
+                {
+                    engGameMessage = $"Game Over! It's a tie! Both players finished with {winner.Score} points!";
+                }
+            }
+                await _notificationService.SendMessageGroupAsync(gameSession.GameId, "GameOver", engGameMessage);
+
+                // Cancel any outstanding question timer to prevent further processing
+                //gameSession.CurrentQuestionTokenSource?.Cancel();
+
             //await Task.Delay(TimeSpan.FromSeconds(10));
             _gameLobbyService.RemoveGame(gameSession.GameId);
         }
 
         public async Task RegisterAnswer(string contextConnectionId, Answer answer, double timeTaken)
         {
-            var gamseSession = _gameLobbyService.GetGameSessionForPlayer(contextConnectionId);
-            if (gamseSession == null || gamseSession.GameHasEnded)
+            var gameSession = _gameLobbyService.GetGameSessionForPlayer(contextConnectionId);
+            if (gameSession == null || gameSession.GameHasEnded)
             {
                 return;
             }
 
-            if (!gamseSession.Players.TryGetValue(contextConnectionId, out Player currentPlayer))
+            if (!gameSession.Players.TryGetValue(contextConnectionId, out Player currentPlayer))
             {
                 await _notificationService.SendMessageClient(contextConnectionId, "ReceiveMessage", "Player not found.");
             }
 
-            if (gamseSession.PlayersAnswers.ContainsKey(currentPlayer.ConnectionId))
+            if (gameSession.PlayersAnswers.ContainsKey(currentPlayer.ConnectionId))
             {
                 await _notificationService.SendMessageClient(contextConnectionId, "ReceiveMessage", "You have already answered this question!");
             }
 
-            gamseSession.PlayersAnswers[contextConnectionId] = (currentPlayer, answer, timeTaken);
-            if (gamseSession.PlayersAnswers.Count == 2)
+            gameSession.PlayersAnswers[contextConnectionId] = (currentPlayer, answer, timeTaken);
+            if (gameSession.PlayersAnswers.Count == 2)
             {
-                await ProcessAnswers(gamseSession);
+                await ProcessAnswers(gameSession);
             }
         }
 
@@ -138,6 +177,20 @@ namespace QuizSignalR.Core.Services
 
                 gameSession.PlayersAnswers.Clear();
                 await SendQuestion(gameSession);
+            }
+        }
+
+        public async Task Disconnect(string contextConnectionId)
+        {
+            var gameSession = _gameLobbyService.GetGameSessionForPlayer(contextConnectionId);
+            if (gameSession != null && !gameSession.GameHasEnded)
+            {
+                if (gameSession!.Players.TryGetValue(contextConnectionId, out var disconnectedPlayer))
+                {
+                    disconnectedPlayer.Status = PlayerStatus.Disconnected;
+                    await _notificationService.SendMessageGroupAsync(gameSession.GameId, "ReceiveMessage", new PlayerMessage(disconnectedPlayer.Name, "Left the game! (chicken!)"));
+                    await EndGame(gameSession);
+                }
             }
         }
     }

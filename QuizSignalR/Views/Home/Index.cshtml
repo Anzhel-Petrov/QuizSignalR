@@ -57,8 +57,15 @@
            document.getElementById("messagesList").appendChild(li);
         });
 
-        connection.on("GameOver", (players) => {
-            gameOver(players);
+        connection.on("GameOver", endGameMessage => {
+            clearInterval(downloadTimer);
+            const li = document.createElement("li");
+            //var winner = players.reduce((prev, current) => (prev.score > current.score) ? prev : current)
+            li.textContent = endGameMessage;
+            document.getElementById("messagesList").appendChild(li);
+            document.getElementById("timer-area").innerHTML = '';
+            document.getElementById("question-area").innerHTML = '';
+            document.getElementById("options-area").innerHTML = '';
         });
 
         document.getElementById("registerButton").addEventListener("click", () => {
@@ -130,31 +137,31 @@
             connection.invoke("AnswerQuestion", answer, timeleft);
         }
 
-        function gameOver(players) {
-            clearInterval(downloadTimer);
-            const li = document.createElement("li");
-            //var winner = players.reduce((prev, current) => (prev.score > current.score) ? prev : current)
-            li.textContent = pickWinner(players);
-            document.getElementById("messagesList").appendChild(li);
-            document.getElementById("timer-area").innerHTML = '';
-            document.getElementById("question-area").innerHTML = '';
-            document.getElementById("options-area").innerHTML = '';
-        }
+        // function gameOver(players) {
+        //     clearInterval(downloadTimer);
+        //     const li = document.createElement("li");
+        //     var winner = players.reduce((prev, current) => (prev.score > current.score) ? prev : current)
+        //     li.textContent = pickWinner(players);
+        //     document.getElementById("messagesList").appendChild(li);
+        //     document.getElementById("timer-area").innerHTML = '';
+        //     document.getElementById("question-area").innerHTML = '';
+        //     document.getElementById("options-area").innerHTML = '';
+        // }
 
-        function pickWinner(players) {
-            // Find the highest score first
-            const highestScore = Math.max(...players.map(player => player.score));
+        // function pickWinner(players) {
+        //     Find the highest score first
+        //     const highestScore = Math.max(...players.map(player => player.score));
 
-            // Collect all players with the highest score
-            const winners = players.filter(player => player.score === highestScore);
+        //     Collect all players with the highest score
+        //     const winners = players.filter(player => player.score === highestScore);
 
-            // Determine the result
-            if (winners.length > 1) {
-                return `It's a draw! Winners are: ${winners.map(w => w.name)}`;
-            } else {
-                return `Game is over! Winner is ${winners[0].name} with ${winners[0].score}`;
-            }
-        }
+        //     Determine the result
+        //     if (winners.length > 1) {
+        //         return `It's a draw! Winners are: ${winners.map(w => w.name)}`;
+        //     } else {
+        //         return `Game is over! Winner is ${winners[0].name} with ${winners[0].score}`;
+        //     }
+        // }
 
         connection.start().then(() => {
           console.log("SignalR connection established.");

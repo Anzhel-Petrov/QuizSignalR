@@ -1,7 +1,7 @@
-﻿namespace QuizSignalR.Core.Models
+﻿namespace QuizSignalR.Core.Models.Enums
 {
-    public enum AddPlayerResultStatus 
-    { 
+    public enum AddPlayerResultStatus
+    {
         Success,
         NameTaken,
         GameFull,
