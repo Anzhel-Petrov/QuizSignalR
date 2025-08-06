@@ -1,28 +1,24 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <title>Question Game</title>
-    <style>
-        /* Basic styling */
-        #game-area { width: 80%; margin: 20px auto; border: 1px solid #ccc; padding: 20px; }
-        #question-area { font-size: 18px; margin-bottom: 20px; }
-        #players-area { margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 10px;}
-        .player { margin-bottom: 10px; }
-    </style>
 </head>
+
 <body>
     <div id="game-area">
-        <div id="chat-area">
-            <ul id="messagesList"></ul>
-        </div>
         <div id="name-area">
             <input type="text" id="nameInput" placeholder="Enter your name" />
             <button id="registerButton">Register</button>
         </div>
         <div id="timer-area"></div>
         <div id="question-area"></div>
-        <div id="options-area"></div>
+        <div id="options-area">
+        </div>
         <div id="players-area"></div>
+        <div id="chat-area">
+            <ul id="messagesList"></ul>
+        </div>
     </div>
 
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
@@ -50,11 +46,24 @@
             displayPlayers(players);
         });
 
+        connection.on("HighlightAnswer", (answer) => {
+            highLightAnswer(answer);
+        });
+
+        function highLightAnswer(answer) {
+            const optionsArea = document.getElementById("options-area");
+            for (const child of optionsArea.children) {
+                if (child.textContent === answer.answerText) {
+                    child.style.color = "red";
+                }
+            }
+        }
+
         connection.on("PlayerAnswered", playerAnswerData => {
-           //displayPlayers(players);
-           const li = document.createElement("li");
-           li.textContent = `${playerAnswerData.playerName} has answered "${playerAnswerData.answerText}" and got it ${playerAnswerData.isCorrect ? 'right' : 'wrong'} - he get's ${playerAnswerData.isCorrect ? playerAnswerData.score : 'no points'}!`;
-           document.getElementById("messagesList").appendChild(li);
+            //displayPlayers(players);
+            const li = document.createElement("li");
+            li.textContent = `${playerAnswerData.playerName} has answered "${playerAnswerData.answerText}" and got it ${playerAnswerData.isCorrect ? 'right' : 'wrong'} - he get's ${playerAnswerData.isCorrect ? playerAnswerData.score : 'no points'}!`;
+            document.getElementById("messagesList").appendChild(li);
         });
 
         connection.on("GameOver", endGameMessage => {
@@ -77,8 +86,8 @@
             const playersArea = document.getElementById("players-area");
             playersArea.innerHTML = ''; // Clear existing players
             players.forEach(player => {
-               const playerDiv = document.createElement("div");
-               playerDiv.classList.add("player");
+                const playerDiv = document.createElement("div");
+                playerDiv.classList.add("player");
                 playerDiv.textContent = `${player.name}: ${player.score}`;
                 playersArea.appendChild(playerDiv);
             });
@@ -113,16 +122,17 @@
         function displayQuestion(question) {
             const questionArea = document.getElementById("question-area");
             const optionsArea = document.getElementById("options-area");
-           
+
             questionArea.textContent = question.questionText;
             optionsArea.innerHTML = ''; // Clear old options
             initializeProgressBar();
 
             question.answers.forEach(answer => {
-                const button = document.createElement("button");
-                button.textContent = answer.answerText;
-                button.addEventListener("click", () => handleAnswer(answer));
-                optionsArea.appendChild(button);
+                const question = document.createElement("button");
+                question.classList.add("question");
+                question.textContent = answer.answerText;
+                question.addEventListener("click", () => handleAnswer(answer));
+                optionsArea.appendChild(question);
             });
 
             startTimer(() => connection.invoke("AnswerQuestion")); // Restart timer with next question logic
@@ -164,8 +174,9 @@
         // }
 
         connection.start().then(() => {
-          console.log("SignalR connection established.");
-            }).catch(err => console.error(err));
+            console.log("SignalR connection established.");
+        }).catch(err => console.error(err));
     </script>
 </body>
+
 </html>

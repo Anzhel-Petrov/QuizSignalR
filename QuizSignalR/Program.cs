@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using QuizSignalR.Core.Contracts;
-using QuizSignalR.Core.Models;
 using QuizSignalR.Core.Services;
 using QuizSignalR.Hubs;
 using QuizSignalR.Infrastructure;

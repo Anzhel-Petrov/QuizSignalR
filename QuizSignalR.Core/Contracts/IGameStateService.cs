@@ -1,6 +1,5 @@
 ﻿using QuizSignalR.Core.Models;
 using QuizSignalR.Infrastructure.Models;
-using System.Collections.Concurrent;
 
 namespace QuizSignalR.Core.Contracts
 {

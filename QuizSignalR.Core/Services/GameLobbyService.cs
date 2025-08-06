@@ -24,35 +24,6 @@ namespace QuizSignalR.Core.Services
             _scopeFactory = serviceScopeFactory;
         }
 
-        public async Task<GameSession> FindOrCreateGameAsync(Player player)
-        {
-            // Try to find a game that is waiting for a second player
-            var waitingGame = _activeGames.Values.FirstOrDefault(g => !g.IsFull);
-
-            if (waitingGame != null)
-            {
-                // Found a game, add the player to it
-                waitingGame.Players.TryAdd(player.ConnectionId, player);
-                _playerGameMap.TryAdd(player.ConnectionId, waitingGame.GameId);
-                return waitingGame;
-            }
-            else
-            {
-                // No waiting games, create a new one
-                var newGame = new GameSession();
-                newGame.Players.TryAdd(player.ConnectionId, player);
-                using (var scope = _scopeFactory.CreateScope())
-                {
-                    var questionsService = scope.ServiceProvider.GetRequiredService<IQuestionService>();
-                    newGame.Questions = await questionsService.LoadRandomQuestions(10); // Load questions for this new game
-                }
-
-                _activeGames.TryAdd(newGame.GameId, newGame);
-                _playerGameMap.TryAdd(player.ConnectionId, newGame.GameId);
-                return newGame;
-            }
-        }
-
         public GameSession? GetGameSessionForPlayer(string connectionId)
         {
             if (_playerGameMap.TryGetValue(connectionId, out var gameId))
@@ -124,7 +95,7 @@ namespace QuizSignalR.Core.Services
                 using (var scope = _scopeFactory.CreateScope())
                 {
                     var questionService = scope.ServiceProvider.GetRequiredService<IQuestionService>();
-                    targetGame.Questions = await questionService.LoadRandomQuestions(1);
+                    targetGame.Questions = await questionService.LoadRandomQuestions();
                 }
             }
 

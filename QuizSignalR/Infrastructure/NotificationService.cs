@@ -2,7 +2,6 @@
 using QuizSignalR.Core.Contracts;
 using QuizSignalR.Hubs;
 using QuizSignalR.Infrastructure.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace QuizSignalR.Infrastructure;
 

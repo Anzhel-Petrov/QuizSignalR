@@ -12,39 +12,84 @@ body {
 }*/
 
 * {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 html {
-    box-sizing: border-box;
-    font: 14px/1.5 Verdana, sans-serif;
+  box-sizing: border-box;
+  font: 14px/1.5 Verdana, sans-serif;
 }
 
-*, *::before, *::after {
-    box-sizing: inherit;
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 body {
-    font: inherit;
-/*    line-height: 1.5;*/
-    background-color: #202020;
-    color: #ffffff;
+  font: inherit;
+  /*    line-height: 1.5;*/
+  background-color: #202020;
+  color: #ffffff;
 }
 
 #game-area {
-    background-color: #808080;
-    padding: 2em;
+  background-color: #808080;
+  padding: 2em;
+  border-radius: 0.3em;
+  box-shadow: 0 0 1em 0 rgb(0, 0, 0, 0.2);
+  width: 80%;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+}
+
+#chat-area {
+  height: 60dvh;
+}
+
+#options-area {
+    outline: 1px solid red;
+    display: flex;
+    flex-wrap: wrap;
+    /*    justify-content: space-between;*/
+    gap: 1em;
+    justify-content: center;
+}
+
+.question {
+    /*    width: 50%;*/
+    flex: 0 0 calc(50% - 10px);
+    height: 100px;
+    width: 100px;
+    /* margin: 0.5em; */
+    align-content: center;
+    border: none;
+    padding: 0.7em 2em;
+    background: none;
+    /* color: #fff; */
+    text-decoration: none;
+    border: 2px solid darkgrey;
     border-radius: 0.3em;
-    box-shadow: 0 0 1em 0 rgb(0, 0, 0, 0.2);
+/*    font-weight: bold;*/
+}
+
+#players-area {
+  margin-top: 20px;
+  border-top: 1px dashed #ccc;
+  padding-top: 10px;
+}
+
+.player {
+  margin-bottom: 10px;
 }
 
 #registerButton {
-    display: block;
-    padding: 0.2em 0.5em;
-    margin-top: 0.5em;
-    border-radius: 0.1em;
-    border: none;
+  display: block;
+  padding: 0.2em 0.5em;
+  margin-top: 0.5em;
+  border-radius: 0.1em;
+  border: none;
 }
 
 /*#options-area {
@@ -54,10 +99,10 @@ body {
 
     #options-area > button {
         flex: 50%;*/ /* or - flex: 0 50% - or - flex-basis: 50% - */
-        /*demo*/
-        /*box-shadow: 0 0 0 1px black;*/
+/*demo*/
+/*box-shadow: 0 0 0 1px black;*/
 /*        margin: 1em 1em;*/
-        /*background-color: white;
+/*background-color: white;
         color: black;
         display: block;
         padding: 0.2em 0.5em;
@@ -65,8 +110,13 @@ body {
         border: none;
     }*/
 
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
+@media (max-width: 600px) {
+  html {
+    font-size: 12px;
+/*    flex-basis: 100%;*/
+  }
+  .question {
+    flex: 1 1 100%;
+    margin: 0 1em 0 1em;
+  }
 }

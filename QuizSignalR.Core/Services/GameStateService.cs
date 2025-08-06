@@ -152,8 +152,12 @@ namespace QuizSignalR.Core.Services
             }
 
             gameSession.PlayersAnswers[contextConnectionId] = (currentPlayer, answer, timeTaken);
+            var otherPlayer = gameSession.Players.Where(p => p.Value.ConnectionId != contextConnectionId).FirstOrDefault();
+            await _notificationService.SendMessageClient(otherPlayer.Key, "HighlightAnswer", answer);
+
             if (gameSession.PlayersAnswers.Count == 2)
             {
+                //await Task.Delay(TimeSpan.FromSeconds(2));
                 await ProcessAnswers(gameSession);
             }
         }
